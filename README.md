@@ -1,21 +1,5 @@
 # fear_greed
 
-This is a sample template for fear_greed - Below is a brief explanation of what we have generated for you:
-
-```bash
-.
-├── README.md                   <-- This instructions file
-├── event.json                  <-- API Gateway Proxy Integration event payload
-├── hello_world                 <-- Source code for a lambda function
-│   ├── app.rb                  <-- Lambda function code
-│   ├── Gemfile                 <-- Ruby function dependencies
-├── template.yaml               <-- SAM template
-├── Gemfile                     <-- Ruby test/documentation dependencies
-└── tests                       <-- Unit tests
-    └── unit
-        └── test_handler.rb
-```
-
 ## Requirements
 
 * AWS CLI already configured with at Administrator permission
@@ -29,27 +13,7 @@ This is a sample template for fear_greed - Below is a brief explanation of what 
 **Invoking function locally using a local sample payload**
 
 ```bash
-sam local invoke HelloWorldFunction --event event.json
-```
-
-**Invoking function locally through local API Gateway**
-
-```bash
-sam local start-api
-```
-
-If the previous command ran successfully you should now be able to hit the following local endpoint to invoke your function `http://localhost:3000/hello`
-
-**SAM CLI** is used to emulate both Lambda and API Gateway locally and uses our `template.yaml` to understand how to bootstrap this environment (runtime, where the source code is, etc.) - The following excerpt is what the CLI will read in order to initialize an API and its routes:
-
-```yaml
-...
-Events:
-    HelloWorld:
-        Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-        Properties:
-            Path: /hello
-            Method: get
+sam local invoke FearGreedFunction --event event.json
 ```
 
 ## Packaging and deployment
@@ -58,10 +22,10 @@ AWS Lambda Ruby runtime requires a flat folder with all dependencies including t
 
 ```yaml
 ...
-    HelloWorldFunction:
+    FearGreedFunction:
         Type: AWS::Serverless::Function
         Properties:
-            CodeUri: hello_world/
+            CodeUri: fear_greed/
             ...
 ```
 
@@ -106,7 +70,7 @@ To simplify troubleshooting, SAM CLI has a command called sam logs. sam logs let
 `NOTE`: This command works for all AWS Lambda functions; not just the ones you deploy using SAM.
 
 ```bash
-sam logs -n HelloWorldFunction --stack-name fear_greed --tail
+sam logs -n FearGreedFunction --stack-name fear_greed --tail
 ```
 
 You can find more information and examples about filtering Lambda function logs in the [SAM CLI Documentation](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-logging.html).
@@ -119,36 +83,12 @@ Run our initial unit tests:
 ruby tests/unit/test_handler.rb
 ```
 
-## Cleanup
-
-In order to delete our Serverless Application recently deployed you can use the following AWS CLI Command:
-
-```bash
-aws cloudformation delete-stack --stack-name fear_greed
-```
-
-## Bringing to the next level
-
-Here are a few things you can try to get more acquainted with building serverless applications using SAM:
-
 ### Learn how SAM Build can help you with dependencies
 
 * Uncomment lines on `app.rb`
 * Build the project with ``sam build --use-container``
-* Invoke with ``sam local invoke HelloWorldFunction --event event.json``
+* Invoke with ``sam local invoke FearGreedFunction --event event.json``
 * Update tests
-
-### Create an additional API resource
-
-* Create a catch all resource (e.g. /hello/{proxy+}) and return the name requested through this new path
-* Update tests
-
-### Step-through debugging
-
-* **[Enable step-through debugging docs for supported runtimes]((https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-debugging.html))**
-
-Next, you can use AWS Serverless Application Repository to deploy ready to use Apps that go beyond hello world samples and learn how authors developed their applications: [AWS Serverless Application Repository main page](https://aws.amazon.com/serverless/serverlessrepo/)
-
 
 # Appendix
 
@@ -178,10 +118,7 @@ All commands used throughout this document
 sam local generate-event apigateway aws-proxy > event.json
 
 # Invoke function locally with event.json as an input
-sam local invoke HelloWorldFunction --event event.json
-
-# Run API Gateway locally
-sam local start-api
+sam local invoke FearGreedFunction --event event.json
 
 # Create S3 bucket
 aws s3 mb s3://BUCKET_NAME
@@ -197,13 +134,7 @@ sam deploy \
     --stack-name fear_greed \
     --capabilities CAPABILITY_IAM
 
-# Describe Output section of CloudFormation stack previously created
-aws cloudformation describe-stacks \
-    --stack-name fear_greed \
-    --query 'Stacks[].Outputs[?OutputKey==`HelloWorldApi`]' \
-    --output table
-
 # Tail Lambda function Logs using Logical name defined in SAM Template
-sam logs -n HelloWorldFunction --stack-name fear_greed --tail
+sam logs -n FearGreedFunction --stack-name fear_greed --tail
 ```
 
